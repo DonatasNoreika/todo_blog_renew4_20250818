@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block "title" %}Įrašai{% endblock %}
+
+{% block "content" %}
+{% for post in posts %}
+      <a href="{% url 'post' post.pk %}" class="list-group-item list-group-item-action">
+        <h5 class="mb-1">{{ post.title }}</h5>
+        <small class="text-muted">Autorius: {{ post.author }} | {{ post.date_created|date:"Y-m-d" }}</small>
+        <p class="mb-1">{{ post.content|truncatewords:30 }}</p>
+          <p class="mb-1">Komentarų: {{ post.comments_count }}</p>
+      </a>
+    <hr>
+    {% empty %}
+      <div class="alert alert-info">Nėra įrašų.</div>
+{% endfor %}
+{% endblock %}
