@@ -7,6 +7,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     date_created = models.DateTimeField(auto_now_add=True)
+    cover = models.ImageField(upload_to='covers', null=True, blank=True)
 
     def comments_count(self):
         return self.comments.all().count()
