@@ -5,10 +5,11 @@
 {% block "content" %}
 <h1>Mano Tinklaraštis</h1>
 <p>Sveiki atvykę į mano tinklaraštį!</p>
-  <h3>Šiuo metu turime:</h3>
-  <ul>
+<h3>Šiuo metu turime:</h3>
+<ul>
     <li><strong>Įrašų:</strong> {{ num_posts }}</li>
     <li><strong>Komentarų:</strong> {{ num_comments }}</li>
     <li><strong>Autorių:</strong> {{ num_users }}</li>
-  </ul>
+</ul>
+<p>Čia jūs lankotes {{ num_visits }}-ą kartą.</p>
 {% endblock %}
