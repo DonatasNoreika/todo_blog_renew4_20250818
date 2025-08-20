@@ -8,7 +8,7 @@
 {% if post.cover %}
 <img src="{{ post.cover.url }}" class="card-img-top">
 {% endif %}
-<p class="mb-1">{{ post.content }}</p>
+<p class="mb-1">{{ post.content|safe }}</p>
 <hr>
 <p class="mb-1">Komentarų: {{ post.comments_count }}</p>
 {% for comment in post.comments.all %}

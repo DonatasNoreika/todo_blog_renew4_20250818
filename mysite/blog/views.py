@@ -4,6 +4,7 @@ from .models import Post, Comment
 from django.contrib.auth.models import User
 from django.views import generic
 from django.db.models import Q
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 def index(request):
     num_visits = request.session.get('num_visits', 1)
@@ -35,3 +36,13 @@ class PostDetailView(generic.DetailView):
     model = Post
     template_name = "post.html"
     context_object_name = "post"
+
+
+class UserPostListView(LoginRequiredMixin, generic.ListView):
+    model = Post
+    template_name = 'user_posts.html'
+    context_object_name = "posts"
+
+    def get_queryset(self):
+        return Post.objects.filter(author=self.request.user)
+

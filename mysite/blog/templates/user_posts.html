@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 
-{% block "title" %}Įrašai{% endblock %}
+{% block "title" %}Mano Įrašai{% endblock %}
 
 {% block "content" %}
+<h1>Mano įrašai</h1>
 {% for post in posts %}
 <a href="{% url 'post' post.pk %}" class="list-group-item list-group-item-action">
     <h5 class="mb-1">{{ post.title }}</h5>
@@ -10,14 +11,11 @@
     {% if post.cover %}
     <img src="{{ post.cover.url }}" class="card-img-top">
     {% endif %}
-    <p class="mb-1">{{ post.content|truncatewords:30|safe }}</p>
+    <p class="mb-1">{{ post.content|truncatewords:30 }}</p>
     <p class="mb-1">Komentarų: {{ post.comments_count }}</p>
 </a>
 <hr>
 {% empty %}
 <div class="alert alert-info">Nėra įrašų.</div>
 {% endfor %}
-
-{% include "posts_pagination.html" %}
-
 {% endblock %}
