@@ -4,7 +4,9 @@
 
 {% block "content" %}
 <h5 class="mb-1">{{ post.title }}</h5>
-<small class="text-muted">Autorius: {{ post.author }} | {{ post.date_created|date:"Y-m-d" }}</small>
+<small class="text-muted">Autorius:
+    <img class="rounded-circle account-img" style="width: 30px" src="{{ post.author.photo.url }}">
+    {{ post.author }} | {{ post.date_created|date:"Y-m-d" }}</small>
 {% if post.cover %}
 <img src="{{ post.cover.url }}" class="card-img-top">
 {% endif %}
@@ -23,7 +25,9 @@
 {% for comment in post.comments.all %}
 <div class="card mb-3">
     <div class="card-body">
-        <h6 class="card-subtitle mb-2 text-muted">{{ comment.author }} | {{ comment.date_created|date:"Y-m-d H:i" }}</h6>
+        <h6 class="card-subtitle mb-2 text-muted">
+            <img class="rounded-circle account-img" style="width: 30px" src="{{ comment.author.photo.url }}">
+            {{ comment.author }} | {{ comment.date_created|date:"Y-m-d H:i" }}</h6>
         <p class="card-text">{{ comment.content }}</p>
     </div>
 </div>

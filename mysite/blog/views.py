@@ -1,5 +1,5 @@
 from django.shortcuts import render, reverse
-from .models import Post, Comment
+from .models import Post, Comment, CustomUser
 from django.contrib.auth.models import User
 from django.views import generic
 from django.db.models import Q
@@ -7,7 +7,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormMixin
-from .forms import CommentForm
+from .forms import CommentForm, CustomUserChangeForm, CustomUserCreateForm
+
 
 def index(request):
     num_visits = request.session.get('num_visits', 1)
@@ -15,23 +16,38 @@ def index(request):
     context = {
         'num_posts': Post.objects.count(),
         'num_comments': Comment.objects.count(),
-        'num_users': User.objects.count(),
+        'num_users': CustomUser.objects.count(),
         'num_visits': num_visits,
     }
     return render(request, template_name="index.html", context=context)
 
-class SignUpView(generic.CreateView):
-    form_class = UserCreationForm
-    template_name = "signup.html"
-    success_url = reverse_lazy("login")
 
 def search(request):
     query = request.GET.get('query')
     context = {
         "query": query,
-        "posts": Post.objects.filter(Q(title__icontains=query) | Q(content__icontains=query) | Q(author__username__icontains=query)),
+        "posts": Post.objects.filter(
+            Q(title__icontains=query) | Q(content__icontains=query) | Q(author__username__icontains=query)),
     }
     return render(request, template_name="search.html", context=context)
+
+
+class SignUpView(generic.CreateView):
+    form_class = CustomUserCreateForm
+    template_name = "signup.html"
+    success_url = reverse_lazy("login")
+
+
+class ProfileUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = CustomUser
+    form_class = CustomUserChangeForm
+    template_name = 'profile.html'
+    success_url = reverse_lazy('profile')
+    context_object_name = "user"
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
 
 class PostListView(generic.ListView):
     model = Post
@@ -71,4 +87,3 @@ class UserPostListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         return Post.objects.filter(author=self.request.user)
-

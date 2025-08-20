@@ -131,7 +131,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'library/media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'blog/media')
 
 MEDIA_URL = '/media/'
 
@@ -176,3 +176,5 @@ TINYMCE_DEFAULT_CONFIG = {
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
+AUTH_USER_MODEL = 'blog.CustomUser'

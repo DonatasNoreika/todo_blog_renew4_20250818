@@ -7,11 +7,13 @@
 {% for post in posts %}
 <a href="{% url 'post' post.pk %}" class="list-group-item list-group-item-action">
     <h5 class="mb-1">{{ post.title }}</h5>
-    <small class="text-muted">Autorius: {{ post.author }} | {{ post.date_created|date:"Y-m-d" }}</small>
+    <small class="text-muted">Autorius:
+        <img class="rounded-circle account-img" style="width: 30px" src="{{ post.author.photo.url }}">
+        {{ post.author }} | {{ post.date_created|date:"Y-m-d" }}</small>
     {% if post.cover %}
     <img src="{{ post.cover.url }}" class="card-img-top">
     {% endif %}
-    <p class="mb-1">{{ post.content|truncatewords:30 }}</p>
+    <p class="mb-1">{{ post.content|truncatewords:30|safe }}</p>
     <p class="mb-1">Komentarų: {{ post.comments_count }}</p>
 </a>
 <hr>
