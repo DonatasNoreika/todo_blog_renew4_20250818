@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block "title" %}Komentaro trynimas{% endblock %}
+{% block "content" %}
+<div class="content-section">
+    <form method="POST">
+        {% csrf_token %}
+        {% load crispy_forms_tags %}
+        <fieldset class="form-group">
+            <legend class="border-bottom mb-4">Ištrinti komentarą</legend>
+            <h2>Ar tikrai norite ištrinti šį komentarą?</h2>
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">
+                    <img class="rounded-circle account-img" style="width: 30px" src="{{ comment.author.photo.url }}">
+                    {{ comment.author }} | {{ comment.date_created|date:"Y-m-d H:i" }}</h6>
+                <p class="card-text">{{ comment.content }}</p>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-outline-danger" type="submit">Taip, ištrinti</button>
+                <a class="btn btn-outline-secondary" href="{% url 'post' comment.post.pk %}">Atšaukti</a>
+            </div>
+        </fieldset>
+    </form>
+</div>
+{% endblock %}

@@ -3,7 +3,8 @@
 {% block "title" %}Mano Įrašai{% endblock %}
 
 {% block "content" %}
-<h1>Mano įrašai</h1>
+<a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post_new' %}">Naujas įrašas</a>
+<h1>Mano įrašai:</h1>
 {% for post in posts %}
 <a href="{% url 'post' post.pk %}" class="list-group-item list-group-item-action">
     <h5 class="mb-1">{{ post.title }}</h5>

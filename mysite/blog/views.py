@@ -3,7 +3,7 @@ from .models import Post, Comment, CustomUser
 from django.contrib.auth.models import User
 from django.views import generic
 from django.db.models import Q
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormMixin
@@ -87,3 +87,59 @@ class UserPostListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         return Post.objects.filter(author=self.request.user)
+
+
+class PostCreateView(LoginRequiredMixin, generic.CreateView):
+    model = Post
+    template_name = "post_form.html"
+    fields = ['title', 'content']
+    success_url = reverse_lazy('userposts')
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+
+class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+    model = Post
+    template_name = "post_form.html"
+    fields = ['title', 'content', 'cover']
+
+    def get_success_url(self):
+        return reverse("post", kwargs={"pk": self.object.pk})
+
+    def test_func(self):
+        return self.get_object().author == self.request.user
+
+
+class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+   model = Post
+   template_name = "post_delete.html"
+   context_object_name = "post"
+   success_url = reverse_lazy('userposts')
+
+   def test_func(self):
+       return self.get_object().author == self.request.user
+
+
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, generic.UpdateView):
+    model = Comment
+    template_name = "comment_form.html"
+    fields = ['content']
+
+    def get_success_url(self):
+        return reverse("post", kwargs={"pk": self.get_object().post.pk})
+
+    def test_func(self):
+        return self.get_object().author == self.request.user
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, generic.DeleteView):
+    model = Comment
+    template_name = "comment_delete.html"
+    context_object_name = "comment"
+
+    def get_success_url(self):
+        return reverse("post", kwargs={"pk": self.get_object().post.pk})
+
+    def test_func(self):
+        return self.get_object().author == self.request.user
