@@ -1,10 +1,13 @@
-from django.shortcuts import render
-# from django.http import HttpResponse
+from django.shortcuts import render, reverse
 from .models import Post, Comment
 from django.contrib.auth.models import User
 from django.views import generic
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import UserCreationForm
+from django.urls import reverse_lazy
+from django.views.generic.edit import FormMixin
+from .forms import CommentForm
 
 def index(request):
     num_visits = request.session.get('num_visits', 1)
@@ -16,6 +19,11 @@ def index(request):
         'num_visits': num_visits,
     }
     return render(request, template_name="index.html", context=context)
+
+class SignUpView(generic.CreateView):
+    form_class = UserCreationForm
+    template_name = "signup.html"
+    success_url = reverse_lazy("login")
 
 def search(request):
     query = request.GET.get('query')
@@ -32,10 +40,28 @@ class PostListView(generic.ListView):
     paginate_by = 5
 
 
-class PostDetailView(generic.DetailView):
+class PostDetailView(FormMixin, generic.DetailView):
     model = Post
     template_name = "post.html"
     context_object_name = "post"
+    form_class = CommentForm
+
+    def get_success_url(self):
+        return reverse("post", kwargs={"pk": self.object.id})
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        form.instance.post = self.get_object()
+        form.instance.author = self.request.user
+        form.save()
+        return super().form_valid(form)
 
 
 class UserPostListView(LoginRequiredMixin, generic.ListView):
